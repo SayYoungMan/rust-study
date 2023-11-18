@@ -1,2 +1,2 @@
-# elixir-study
-My journey of learning first functional programming language with official doc as a guide.
+# rust-study
+My journey of learning rust language with official doc as a guide.
