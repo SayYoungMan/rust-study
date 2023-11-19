@@ -1,2 +1,3 @@
 # rust-study
-My journey of learning rust language with official doc as a guide.
+
+My journey of learning Rust language with official doc as a guide.
