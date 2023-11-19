@@ -6,3 +6,7 @@
 !*.*
 # Unignore directories
 !*/
+
+# Rust related files
+**/target
+**/Cargo.lock

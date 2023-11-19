@@ -1,3 +1,8 @@
 {
-  "cSpell.words": ["rustfmt"]
+  "cSpell.words": ["rustfmt"],
+  "rust-analyzer.linkedProjects": [
+    "./Cargo.toml",
+    "./The Book/1. Getting Started/hello_cargo/Cargo.toml",
+    "./The Book/2. Programming a Guessing Game/guessing_game/Cargo.toml"
+  ]
 }
