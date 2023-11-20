@@ -1,5 +1,5 @@
 {
-  "cSpell.words": ["println", "rustfmt"],
+  "cSpell.words": ["isize", "println", "rustfmt", "usize"],
   "rust-analyzer.linkedProjects": [
     "./Cargo.toml",
     "./The Book/1. Getting Started/hello_cargo/Cargo.toml",
