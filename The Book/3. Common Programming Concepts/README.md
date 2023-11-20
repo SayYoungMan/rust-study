@@ -137,4 +137,31 @@ A `scalar` type represents a single value.
 #### Invalid Array Element Access
 
 - Attempt to access invalid element will result in a runtime error and cause the program to panic.
-- Other low-level languages can let invalid memory to be accessed but Rust protects by imediately exiting.
+- Other low-level languages can let invalid memory to be accessed but Rust protects by immediately exiting.
+
+## 3.3. Functions
+
+### Functions
+
+- Rust use `snake case` as convention for function and variable names.
+- Can call any function defined by entering name followed by a set of parentheses.
+- Rust doesn't care where the function is defined, only cares if it's defined in a scope that can be seen by caller.
+
+### Parameters
+
+- `Parameters` are special variables that are part of a function's signature.
+- When a function has parameters, you can provide it with arguments.
+- In function signatures, you must declare the type of parameters.
+
+### Statements and Expressions
+
+- Function bodies are made up of a series of statements optionally ending in an expression.
+- `Statements` are instructions that perform some action and do not return a value.
+- `Expressions` evaluate to a resultant value.
+  - Expressions to not include ending semicolons.
+
+### Functions with Return Values
+
+- We must declare the type of return value with `->`.
+- In Rust, return value is synonymous with the value of the final expression in the block of the body of a function.
+- You can return early by `return` keyword and specifying a value but if not it will return the last expression implicitly.

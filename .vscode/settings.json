@@ -4,6 +4,7 @@
     "./Cargo.toml",
     "./The Book/1. Getting Started/hello_cargo/Cargo.toml",
     "./The Book/2. Programming a Guessing Game/guessing_game/Cargo.toml",
-    "./The Book/3. Common Programming Concepts/variables/Cargo.toml"
+    "./The Book/3. Common Programming Concepts/variables/Cargo.toml",
+    "./The Book/3. Common Programming Concepts/functions/Cargo.toml"
   ]
 }
