@@ -171,3 +171,45 @@ A `scalar` type represents a single value.
 - Comments can be made by starting with `//`.
 - Can be placed at the end of lines.
 - Usually used on a separate line above the code it's annotating.
+
+## 3.5. Control Flow
+
+### if Expressions
+
+- Allows you to branch code depending on conditions.
+- Blocks of code associated with the conditions in if expressions are sometimes called `arms`.
+- `else` expression is alternative code to run when condition evaluates to false.
+- If condition is not `bool`, it will throw a compile error. (No automatic conversion to bool)
+- You can use multiple conditions by combining `if` and `else` in an `else if` expression.
+
+### Using if in a let statement
+
+- Because `if` is an expression, we can use it on the right side of a `let` statement to assign the outcome to a variable.
+- If the types are mismatched from `if` arm and `else` arm, we will get an error.
+
+### Repeating Code with loop
+
+- `loop` keyword tells Rust to execute a block until you explicitly tell it to stop.
+- You can place `break` keyword within the loop to tell the program to stop executing the loop.
+- `continue` tells the program to skip over any remaining code in current iteration and go to next iteration.
+
+### Returning Values from Loops
+
+- One use of `loop` is to retry an operation that might fail, such as checking whether a thread completed the job.
+- To pass result of operation out of the loop, place the value after `break` expression.
+
+### Loop Labels to Disambiguate Between Multiple Loops
+
+- You can specify a `loop label` on a loop that you can use with `break` or `continue` to specify which loop to apply.
+- It must begin with a single quote.
+
+### Conditional Loops with while
+
+- While the condition is `true`, the loop runs and when the condition ceases to be `true`, the program calls `break.`
+- This can be achieved easily through `while`.
+
+### Looping through a Collection with for
+
+- You can use `while` to loop over elements in array but this approach is error pron as it could cause the program to panic if index value of test condition is incorrect.
+  - It is also slow because compiler adds runtime code to perform conditional check of whether index is within the bounds of array on every iteration.
+- Therefore, use `for` loop to increase safety of code and conciseness.
