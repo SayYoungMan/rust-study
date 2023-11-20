@@ -165,3 +165,9 @@ A `scalar` type represents a single value.
 - We must declare the type of return value with `->`.
 - In Rust, return value is synonymous with the value of the final expression in the block of the body of a function.
 - You can return early by `return` keyword and specifying a value but if not it will return the last expression implicitly.
+
+## 3.4. Comments
+
+- Comments can be made by starting with `//`.
+- Can be placed at the end of lines.
+- Usually used on a separate line above the code it's annotating.
