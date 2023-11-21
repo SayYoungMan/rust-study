@@ -7,6 +7,7 @@
     "./The Book/3. Common Programming Concepts/variables/Cargo.toml",
     "./The Book/3. Common Programming Concepts/functions/Cargo.toml",
     "./The Book/3. Common Programming Concepts/branches/Cargo.toml",
-    "./The Book/3. Common Programming Concepts/loops/Cargo.toml"
+    "./The Book/3. Common Programming Concepts/loops/Cargo.toml",
+    "./The Book/4. Understanding Ownership/references/Cargo.toml"
   ]
 }
