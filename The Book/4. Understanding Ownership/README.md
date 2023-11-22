@@ -148,3 +148,29 @@ fn calculate_length(s: &String) -> usize { // s is a reference to a String
 
 - In languages with pointers, it's easy to create a `dangling pointer - a pointer that references a location in memory that may have been given to someone else - by freeing some memory while preserving a pointer to that memory.
 - In Rust, the compile guarantees, there will never be dangling references: if you have a reference to data, the compiler will ensure that the data will not go out of scope before the reference to the data does.
+
+## 4.3. The Slice Type
+
+- Slices let you reference a contiguous sequence of elements in a collection rather than the whole collection. It's kind of reference, so it does not have ownership.
+
+### String Slices
+
+- A `string slice` is a reference to part of a String and it looks like:
+  ```rust
+  let s = String::from("hello world");
+  let hello = &s[0..5];
+  let world = &s[6..11];
+  ```
+- If it starts at index 0, you can drop the value before the periods: `let hello = &s[..5]`.
+- If slices includes the last byte, you can drop the last number: `let world = &s[6..]`.
+- String slice range indices must occur at valid UTF-8 character boundaries. If you attempt to create a string slice in the middle of a multi-byte character, your program will exit with an error.
+- Type that signifies `string slice` is written as `&str`.
+
+### String Literals as Slices
+
+- The type of string literal is `&str`: a slice pointing to specific point of the binary, which is also why they are immutable.
+
+### String Slices as Parameters
+
+- It is better to write parameter signature as `&str` than `&String` because it allows us to use the same function on both `&String` values and `&str` values.
+- If we have string slice, we can pass that directly and if we have String, we can pass a slice or reference of it.
