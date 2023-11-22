@@ -90,3 +90,14 @@ fn main() {
 
 - It's possible for structs to store references to data owned by something else, but it requires the use of `lifetimes`.
 - Lifetimes ensure that the data referenced by a struct is valid for as long as the struct is.
+
+## 5.2. An Example Program Using Structs
+
+- Accessing fields of borrowed struct instance does not move the field values, which is why you often see borrows of structs.
+- You can't directly `println!` instance of `Rectangle` struct because it doesn't use formatting known as `Display`.
+- Putting the specifier `:?` inside the curly brackets tells `println!` we want to use an output format called `Debug`.
+- To use it, we have to add the outer attribute `#[derive(Debug)]` before the struct definition.
+- `:#?` will also style the output.
+- Another way to print a value using `Debug` format is to use `dbg!` macro, which takes ownership of an expression, prints the file and line number of where the call occurs along with the resultant value, and returns the ownership.
+- Rust has a number of traits to use with the `derive` attribute that can add useful behavior to our custom types.
+
