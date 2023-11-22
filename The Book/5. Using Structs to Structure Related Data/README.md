@@ -101,3 +101,28 @@ fn main() {
 - Another way to print a value using `Debug` format is to use `dbg!` macro, which takes ownership of an expression, prints the file and line number of where the call occurs along with the resultant value, and returns the ownership.
 - Rust has a number of traits to use with the `derive` attribute that can add useful behavior to our custom types.
 
+## 5.3. Method Syntax
+
+- `Methods` are similar to functions but they are defined in within the context of a struct(or an enum or a trait object), and their first parameter is always `self`.
+- The `&self` is short for `self: &Self`. Within `impl` block, the type `Self` is an alias for the type that the `impl` block is for.
+- We still use `&` to indicate that the method borrows the instance. Methods can take ownership of self, borrow self immutably or borrow self mutably.
+- Having a method that takes ownership of the instance is usually used when the method transforms self into something else and you want to prevent the caller from using the original instance after the transformation.
+- Main reason for using methods, is for organization. We put all things that we can do with an instance in one `impl` block.
+- Methods that have the same name as a field and only return the value in the field is called `getters`. They are useful to make a field private but the method public, thus enabling read-only access to that field.
+
+### Where's the -> Operator?
+
+- In C and C++, two operators are used for calling methods: `.` if you're calling a method on the object directly and `->` if you're calling the method on ta pointer to the object and need to dereference the pointer first.
+- Rust has automatic referencing and dereferencing so this is not needed.
+- Given the receiver and name of a method, Rust can figure out whether method is reading(`&self`), mutating(`&mut self`), or consuming(`self`).
+
+### Associated Functions
+
+- All functions defined within an `impl` block are called `associated functions` because they are associated with the type.
+- We can define associated functions that don't have self as their first parameter. (like `String::from`).
+- Associated functions that aren't methods are often used for constructors that will return a new instance of the struct. (Often called `new`)
+
+### Multiple impl Blocks
+
+- Each struct is allowed to have multiple `impl` blocks.
+- But there is no reason to separate methods into multiple `impl` blocks.
