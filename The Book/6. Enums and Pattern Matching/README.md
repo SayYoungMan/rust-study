@@ -120,3 +120,36 @@ match dice_roll {
 - It needs to be placed last because the patterns are evaluated in order.
 - If you want to catch-all but don't want to use the value in the pattern, `_` is a special pattern that matches any value and does not bind to that value.
 - If you want nothing to happen on catch-all case by using `()`.
+
+## 6.3. Concise Control Flow with if let
+
+- `if let` syntax lets you handle values that match one pattern while ignoring the rest
+
+```rust
+let config_max = Some(3u8);
+match config_max {
+    Some(max) => println!("The max is {}", max),
+    _ => (),
+}
+```
+
+- The above code can be refactored using `if let` into:
+
+```rust
+let config_max = Some(3u8);
+if let Some(max) = config_max {
+    println!("The max is {}", max);
+}
+```
+
+- You can think of `if let` as syntax sugar for a `match` that runs code when the value matches one pattern and ignores all other values.
+- We can include `else` with `if let` and it is the same as the block of code that would go with catch-all case.
+
+```rust
+let mut count = 0;
+if let Coin::Quarter(state) = coin {
+    println!("{state}");
+} else {
+    count += 1
+}
+```
