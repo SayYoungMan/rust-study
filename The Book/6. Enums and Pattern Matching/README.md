@@ -55,3 +55,68 @@ let loopback = IpAddr::V6(String::from("::1"));
 - Variants `None` and `Some` are also included in prelude so no need to use `Option::` prefix.
 - Having Option is better than null because `Option<T>` and `T` are different types so the compiler won't let us use `Option<T>` value as if it were definitely a valid value. So the compiler will make sure to handle the null case before using its value.
 - In order to use `Option<T>`, you want to have code that will handle each variant.
+
+## 6.2. The match Control Flow Construct
+
+- `match` allows you to compare a value against a series of patterns and then execute code based on which pattern matches.
+- The power of `match` comes from the expressiveness of the patterns and the fact that the compiler confirms that all possible cases are handled.
+- The first value that fits will be used during execution.
+
+```rust
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter,
+}
+
+fn value_in_cents(coin: Coin) -> u8 {
+    match coin {
+        Coin:: Penny => 1,
+        Coin:: Nickel => 5,
+        Coin:: Dime => 10,
+        Coin:: Quarter => 25,
+    }
+}
+```
+
+- Match arm has two parts: a pattern and an expression. `=>` operator separates the pattern and the code.
+
+### Patterns That Bind to Values
+
+- Match arms can bind to the parts of the values that match the pattern and extract values out of enum variants.
+
+```rust
+enum UsState {
+    Alabama,
+    ...
+}
+enum Coin {
+    ...
+    Quarter(UsState),
+}
+match coin {
+    Coin::Quarter(state) => {
+        println!("{state}")
+    }
+}
+```
+
+### Matches Are Exhaustive
+
+- Matches in Rust are _exhaustive_: we must exhaust every last possibility in order for the code to be valid.
+
+### Catch-all Patterns and the \_ Placeholder
+
+```rust
+match dice_roll {
+    3 => add_fancy_hat(),
+    7 => remove_fancy_hat(),
+    other => move_player(other),
+}
+```
+
+- Last pattern will match all values not specifically listed.
+- It needs to be placed last because the patterns are evaluated in order.
+- If you want to catch-all but don't want to use the value in the pattern, `_` is a special pattern that matches any value and does not bind to that value.
+- If you want nothing to happen on catch-all case by using `()`.
