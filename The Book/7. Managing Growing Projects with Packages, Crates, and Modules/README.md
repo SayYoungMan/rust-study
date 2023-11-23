@@ -19,3 +19,24 @@
 - Can contain as many binary crates, but at most one library crate.
 - If the package directory contains `src/lib.rs`, Cargo knows the package contains a library crate with the same name as the package.
 - A package can have multiple binary crates by placing files in the `src/bin` directory.
+
+## 7.2. Defining Modules to Control Scope and Privacy
+
+### Modules Cheat Sheet
+
+- The compiler first looks in the crate root file (`src/lib.rs` or `src/main.rs`) for code to compile.
+- In the root file, you can declare modules (`mod garden`). The compiler will look for modules code in:
+  - Curly brackets after module declaration
+  - In `src/garden.rs` file
+  - In `src/garden/mod.rs` file
+- In other files than crate root, you can declare submodules. For example `mod vegetables;` in `src/garden.rs`
+- You can now refer to code in that module from anywhere else in that same crate. `crate::garden::vegetables::Asparagus`
+- Code within a module is private from its parent modules by default. To make it public, declare it with `pub mod` instead of `mod`. To make items within a public module public as well, use `pub` before their declarations.
+- Within a scope, the `use` keyword creates shortcuts to items to reduce repetition of long paths.
+
+### Grouping Related Code in Modules
+
+- `Modules` let us organize code within a crate for readability and easy reuse. They also allow us to control the `privacy` of items.
+- Private items are internal implementation details not available for outside use.
+- Modules defined in the same module are called `siblings`.
+- If module A is contained inside module B, we say module A is `child` of module B and module B is the `parent` of module A.

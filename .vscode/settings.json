@@ -18,6 +18,8 @@
     "./The Book/3. Common Programming Concepts/loops/Cargo.toml",
     "./The Book/4. Understanding Ownership/references/Cargo.toml",
     "./The Book/4. Understanding Ownership/first_word/Cargo.toml",
-    "./The Book/5. Using Structs to Structure Related Data/rectangles/Cargo.toml"
+    "./The Book/5. Using Structs to Structure Related Data/rectangles/Cargo.toml",
+    "./The Book/7. Managing Growing Projects with Packages, Crates, and Modules/backyard/Cargo.toml",
+    "./The Book/7. Managing Growing Projects with Packages, Crates, and Modules/restaurant/Cargo.toml"
   ]
 }
