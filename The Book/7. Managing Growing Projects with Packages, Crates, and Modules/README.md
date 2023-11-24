@@ -40,3 +40,29 @@
 - Private items are internal implementation details not available for outside use.
 - Modules defined in the same module are called `siblings`.
 - If module A is contained inside module B, we say module A is `child` of module B and module B is the `parent` of module A.
+
+## 7.3. Paths for Referring to an Item in the Module Tree
+
+- A path can be either:
+  - An `absolute path` that is the full path starting from a crate root; for code from an external crate, the absolute path begins with crate name, and for code in current crate, it starts with the literal `crate`.
+  - A `relative path` starts from the current module and uses `self`, `super` or an identifier in the current module.
+- Choosing which depends on whether you are more likely to move item definition code separately from or together with the code that uses the item.
+- Our preference in general is to specify absolute paths because it's more likely to move code definitions and item calls independently of each other.
+- In Rust, all items are private to parent modules by default.
+- Making module public doesn't make its contents public. We need to make items within the module public as well.
+
+### Best Practices for Packages with a Binary and a Library
+
+- Typically, binary crate will have just enough code to start executable that calls code in the library crate.
+- This lets other projects benefit from the functionality that the package provides.
+- Module tree should be defined in `src/lib.rs`. Then, any public items can be used in the binary crate by starting paths with the name of the package.
+
+### Starting Relative Paths with super
+
+- Using `super` allows us to reference an item in the parent module,
+
+### Making Structs and Enums Public
+
+- If we use `pub` before a struct definition, we make the struct public but the fields will still be private.
+- If public struct has a private field, it needs to provide a public associated function that constructs an instance of it.
+- In contrast, if we make a public enum, all of its variants are public.
