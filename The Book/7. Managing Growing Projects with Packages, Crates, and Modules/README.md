@@ -66,3 +66,53 @@
 - If we use `pub` before a struct definition, we make the struct public but the fields will still be private.
 - If public struct has a private field, it needs to provide a public associated function that constructs an instance of it.
 - In contrast, if we make a public enum, all of its variants are public.
+
+## 7.4. Bringing Paths Into Scope with the use Keyword
+
+- Having to write out the paths to call functions can be inconvenient, so we can create a shortcut to a path with `use` keyword once, and then use the shorter name everywhere else in the scope.
+- Adding `use` and a path in a scope is similar to creating a symbolic link in the filesystem.
+- `use` only creates the shortcut for the particular scope in which the `use` occurs.
+
+### Creating Idiomatic use Paths
+
+- Bringing a function's parent module into scope is more idiomatic because specifying the parent module when calling the function makes it clear that the function isn't locally defined.
+- When brining structs, enums, or other items with `use`, it's idiomatic to specify the full path. (Just a convention) Exception is when bringing two items with same name.
+
+### Providing New Names with the as Keyword
+
+- We also can specify `as` and a new local name, or `alias` for the type. This solves problem of bringing two types of the same name.
+
+```rust
+use std::fmt::Result;
+use std::io::Result as IoResult;
+```
+
+### Re-exporting Names with pub use
+
+- When a name is brought to scope with `use` keyword, the name available in the new scope is private.
+- To enable the code that calls our code to refer to that name as if it had been defined in that code's scope, we can do `pub use`.
+- Re-exporting is useful when the internal structure of the code is different from how programmers calling your code would think about the domain.
+
+### Using External Packages
+
+- Pulling packages into my package can be done by: listing them in `Cargo.toml` file and using `use` to bring items from their crates into scope.
+
+### Using Nested Paths to Clean Up Large use Lists
+
+```rust
+use std::{cmp::Ordering, io};
+use std::io::{self, Write};
+```
+
+- We can use nested paths to bring the same items into scope in one line.
+- We can use a nested path at any level in a path, which is useful when combining two `use` statements that share a subpath.
+
+### The Glob Operator
+
+```rust
+use std::collections::*
+```
+
+- If we want to bring all public items defined in a path into scope, we can use `*` glob operator.
+- The glob operator can make it harder to tell what names are in scope and where a name was defined.
+- The glob operator is often used when testing to bring everything under test into the `tests` module.
