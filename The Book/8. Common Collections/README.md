@@ -144,3 +144,62 @@
   }
   ```
 - Alternatively, the `bytes` method returns each raw byte.
+
+## 8.3. Storing Keys with Associated Values in Hash Maps
+
+- The type `HashMap<K, V>` stores a mapping of keys of type K to values of type V using a `hashing functions`, which determines how it places these keys and values into memory.
+- Hash maps are useful when you want to look up data not by an index but by using a key.
+
+### Creating a New Hash Map
+
+- You can create an empty hash map using `new` and add elements with `insert`.
+- It's not included in the prelude so it has to be brought into scope by `use`.
+
+### Accessing Values in a Hash Map
+
+```rust
+  use std::collections::HashMap;
+
+  let mut scores = HashMap::new();
+
+  scores.insert(String::from("Blue"), 10);
+  scores.insert(String::from("Yellow"), 50);
+
+  let team_name = String::from("Blue");
+  let score = scores.get(&team_name).copied().unwrap_or(0);
+```
+
+- The `get` method returns an `Option<&V>` so if there is no value with that key, it will return `None`.
+- This program handles it by calling `copied` to get an `Option<i32>` rather than `Option<&i32>`.
+- Then, `unwrap_or` to set `score` to 0 if it doesn't have an entry for the key.
+- You can iterate over each key/value pair using for loop:
+  ```rust
+  for (key, value) in &scores {
+    println!("{key}: {value}")
+  }
+  ```
+
+### Hash Maps and Ownership
+
+- For types that implement `Copy` trait, the values are copied into the hash map.
+- For owned values like String, the values will be moved and hash map will be the owner.
+
+### Updating a Hash Map
+
+- Each unique key can only have one value associated with it at a time.
+- When you want to change the data in a hash map, you have to decide how to handle the case when a key already has a value assigned.
+
+#### Overwriting a Value
+
+- If we insert a key and a value into a hash map and insert the same key with different value, value associated with that key will be replaced.
+
+#### Adding a Key and Value Only if a Key isn't Present
+
+- Hash maps have a API called `entry` that takes the key you want to check. The return value of it is an enum called `Entry` that represents a value that might exist.
+- `or_insert` method on `Entry` returns a mutable reference to the value for corresponding `Entry` key if that exists, and if not, inserts the parameter as the new value for this key and returns a mutable reference to the new value.
+
+#### Hashing Functions
+
+- By default, `HashMap` uses a hashing function called `SipHash` that can provide resistance to Denial of Service attacks.
+- If you find that this hash function is too slow, you can switch to another function by specifying a different hasher.
+- A `hasher` is a type that implements the `BuildHasher` trait.
