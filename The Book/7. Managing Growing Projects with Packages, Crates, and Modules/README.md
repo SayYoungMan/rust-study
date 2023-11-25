@@ -116,3 +116,15 @@ use std::collections::*
 - If we want to bring all public items defined in a path into scope, we can use `*` glob operator.
 - The glob operator can make it harder to tell what names are in scope and where a name was defined.
 - The glob operator is often used when testing to bring everything under test into the `tests` module.
+
+## 7.5. Separating Modules into Different Files
+
+- When modules get large, you might want to move their definitions to a separate file to make the code easier to navigate.
+- Make sure to have module declaration in the crate root so that the compiler knows to look into related file in `src/module_name.rs`
+- Once the compiler knows the files is part of the project, other files can refer to the loaded file's code using a path. So you only need to load a file using `mod` once. `mod` is not like `include` operation in other programming languages.
+
+### Alternate File Paths
+
+- Rust also supports `src/module/mod.rs` format which is older style.
+- If you use both styles for the same module, you'll get a compiler error.
+- Downside to this style is that the project can end up with many files named mod.rs, which can get confusing.
