@@ -73,3 +73,52 @@
 - `main` can return `Result<(), E>` by specifying `fn main() -> Result<(), Box<dyn Error>>`.
 - When `main` function returns `Ok(())`, it will exit with 0 and if it returns `Err` value, it will exit with a nonzero value.
 - The `main` function may return any types that implement `std::process:Termination` trait, which contains a function `report` that returns an `ExitCode`.
+
+## 9.3. To panic! or not to panic!
+
+### Examples, Prototype Code, and Tests
+
+- When you are writing an example to illustrate some concept, including robust error-handling code can make the example less clear.
+- `unwrap` and `expect` methods are handy when prototyping, before you're ready to decide how to handle errors.
+- If a method call fails in a test, you'd want the whole test to fail so you should `panic!` to mark the test as a failure.
+
+### Cases in Which You Have More Information than the Compiler
+
+- It's appropriate to call `unwrap` or `expect` when you have some other logic that ensures the `Result` will have an `Ok` value.
+- If you can ensure that you'll never have an `Err` variant, it's good to call `expect` and document the reason why you think you will never have an `Err` variant.
+  ```rust
+  let home: IpAddr = "127.0.0.1".parse().expect("Hardcoded IP should be valid.");
+  ```
+
+### Guidelines for Error Handling
+
+- It's advisable to have your code panic when it's possible that the code goes into a bad state.
+- `Bad state` is when some assumption, guarantee, contract, or invariant has been broken.
+- If someone calls your code and passes values that don't make sens, it's best to return an error. However, in cases where continuing could be insecure or harmful, it's best to call `panic!`.
+- When failure is expected, it's better to return a `Result`.
+- Functions often have `contracts`: their behavior is only guaranteed if the inputs meet particular requirements. Panicking when the contract is violated makes sense.
+
+### Creating Custom Types for Validation
+
+- To ensure that the input number is between 1 and 100 we can create custom struct for it.
+- Implement a associated function `new` that creates an instance of itself only when the number is between the range, otherwise panic.
+
+```rust
+pub struct Guess {
+    value: i32,
+}
+
+impl Guess {
+    pub fn new(value: i32) -> Guess {
+        if value < 1 || value > 100 {
+            panic!("Guess value must be between 1 and 100, got {}.", value);
+        }
+
+        Guess { value }
+    }
+
+    pub fn value(&self) -> i32 {
+        self.value
+    }
+}
+```
