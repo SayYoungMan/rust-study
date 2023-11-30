@@ -65,3 +65,40 @@
 
 - You can annnotate the tests using the `ignore` attribute to exclude them.
 - If we want to run only the ignored tests, we can use `cargo test -- --ignored`.
+
+## 11.3. Test Organization
+
+- `Unit tests` are small and more focused, testing one module in isolation at a time, and can test private interfaces.
+- `Integration tests` are entirely external to your library and use your code in the same way any other external code would, using only the public interface and potentially exercising multiple modules per test.
+
+### Unit Tests
+
+- You'll put unit tests in the src directory in each file with the code that they are testing.
+- The convention is to create a module named `tests` in each file to contain the test functions and annotate the module with `cfg(test)`.
+
+#### The Tests Module and #[cfg(test)]
+
+- The `#[cfg(test)]` annotation on the tests module tells Rust to compile and run the test code only when you run `cargo test`.
+- The attribute `cfg` stands for configuration and tells Rust that the following item should only be included given a certain configuration option.
+
+#### Testing Private Functions
+
+- Items in child modules can use the items in their ancestor modules. If we bring all of the `test` module's parent's items into scope with `use super::*` and the test can call private functions.
+
+### Integration Tests
+
+#### The tests directory
+
+- We create a tests directory at the top level of our project directory, next to src.
+- Cargo knows to look for integration test files in this directory.
+- We can create as many test files in here as we want and Cargo will compile each as individual crate.
+- To run all the tests in a particular integration test file, use `cargo test --test integration_test`.
+
+#### Submodules in Integration Tests
+
+- The different behaviour of tests directory files is most noticeable when you have a set of helper functions to use in multiple integration test files. Because creating a new file to share common code creates new crate.
+- Therefore, create `tests/common/mod.rs` to tell Rust not to treat it as an integration test file.
+
+#### Integration Tests for Binary Crates
+
+- We can only create integration tests if there is a library crate.
