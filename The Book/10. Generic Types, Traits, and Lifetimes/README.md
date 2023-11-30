@@ -143,3 +143,109 @@ fn main() {
   ```rust
   impl <T: Display> ToString for T
   ```
+
+## 10.3. Validating References with Lifetimes
+
+- Rust has a `lifetime`, which is the scope for which that reference is valid. Most of the time lifetimes are implicit and inferred.
+- We must annotate lifetimes when the lifetimes of references could be related in a few different ways.
+
+### Preventing Dangling References with Lifetimes
+
+- The main aim of lifetimes is to prevent `dangling references`, which cause a program to reference data other than the data it's intended to reference.
+- Example of dangling references:
+
+  ```rust
+  fn main() {
+    let r;
+
+    {
+        let x = 5;
+        r = &x;
+    }
+
+    println!("r: {}", r);
+  }
+  ```
+
+### The Borrow Checker
+
+- The Rust compiler has a `borrow checker` that compares scopes to determine whether all borrows are valid.
+
+### Generic Lifetimes in Functions
+
+- Let's say we have a function that takes two string slices and returns a longer string slice:
+  ```rust
+  fn longest(x: &str, y: &str) -> &str {
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
+  }
+  ```
+- This wouldn't work because Rust can't tell whether the reference being returned refers to x or y.
+- To fix this error, we'll add generic lifetime parameters that define the relationship between the references so the borrow checker can perform its analysis.
+
+### Lifetime Annotation Syntax
+
+- Lifetime annotations describe the relationships of the lifetimes of multiple references to each other without affecting the lifetimes.
+- Lifetime parameters must start with `'` and are usually lowercase and very short. (`'a`)
+
+```rust
+  &i32        // a reference
+  &'a i32     // a reference with an explicit lifetime
+  &'a mut i32 // a mutable reference with an explicit lifetime
+```
+
+### Lifetime Annotations in Functions Signatures
+
+- To use lifetime annotations in function signatures, we need to declare the generic lifetime parameters inside angle brackets between the function name and the parameter list.
+- We want the signature to express that the returned reference will be valid as long as both the parameters are valid:
+
+```rust
+fn longest<'a>(x: &'a str, y: &'a str) -> &'a str {
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
+}
+```
+
+### Lifetime Annotations in Struct Definitions
+
+- We can define structs to hold references, but we have to add a lifetime annotation on every reference in the struct's definitions.
+
+```rust
+struct ImportantExcerpt<'a> {
+    part: &'a str,
+}
+
+fn main() {
+    let novel = String::from("Call me Ishmael. Some years ago...");
+    let first_sentence = novel.split('.').next().expect("Could not find a '.'");
+    let i = ImportantExcerpt {
+        part: first_sentence,
+    };
+}
+```
+
+### Lifetime Elision
+
+- There are few deterministic patterns in lifetime annotations that are programmed in the compiler so the borrow checker could infer the lifetimes without explicit annotations.
+- The patterns programmed into Rust's analysis of references are called the `lifetime elision rules`.
+- Lifetimes on function or method parameters are called `input lifetimes`, and lifetimes on return values are called `output lifetimes`.
+
+1. The compiler assigns a lifetime parameter to each parameter that's a reference.
+2. If there is exactly one input lifetime parameter, that lifetime is assigned to all output lifetime parameters.
+3. If there are multiple input lifetime parameters, but one of them is `&self` or `mut &self` because it's a method, the lifetime of `self` is assigned to all output lifetime parameters.
+
+### Lifetime Annotations in Method Definitions
+
+- Lifetime names for struct fields always need to be declared after the `impl` keyword and then used after the struct's name.
+- In method signatures inside the `impl` block, references might be tied to the lifetime of references in the struct's fields, or they might be independent.
+
+#### The Static Lifetime
+
+- `'static` denotes that the affected reference can live for the entire duration of the program.
+- Most of the time, an error message suggesting the `'static` lifetime results from attempting to create a dangling reference or a mismatch of the available lifetimes.
