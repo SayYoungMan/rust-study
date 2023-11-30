@@ -40,3 +40,28 @@
 
 - The test function with `Result<T, E>` will return `Ok(())` when test passes and `Err` with `String` when the test fails.
 - Writing tests this way enables you to use question mark operator which can be convenient way to write tests that should fail if any operation within them returns `Err` variant.
+
+## 11.2. Controlling How Tests are Run
+
+- The default behaviour of the binary produced by `cargo test` is to run all the tests in parallel and capture output generated duing test runs, preventing the output from being displayed and making it easier to read the output related to the test results.
+
+### Running Tests in Parallel or Consecutively
+
+- By default the test runs parallelly using threads so you must make sure your tests don't depend on each other or on any shared state.
+- To have more fine-grained control over the number of threads, you can send `--test-threads` flag.
+- To not use any parallelism run tests by `cargo test -- --test-threads=1`.
+
+### Showing Function Output
+
+- By default, if a test passes, Rust's test library captures anything printed to standard output.
+- If a test fails, we'll see whatever was printed to standard output with the rest of the failure message.
+- If we want to see printed values for passing tests as well, pass `--show-output` flag.
+
+### Running a Subset of Tests by Name
+
+- You can choose which tests to run by passing `cargo test` the name or names of the tests you want to run as an argument.
+
+### Ignoring Some Tests Unless Specifically Requested
+
+- You can annnotate the tests using the `ignore` attribute to exclude them.
+- If we want to run only the ignored tests, we can use `cargo test -- --ignored`.
