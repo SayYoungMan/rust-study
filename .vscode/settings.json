@@ -24,6 +24,7 @@
     "./The Book/9. Error Handling/error_handle/Cargo.toml",
     "./The Book/10. Generic Types, Traits, and Lifetimes/generics/Cargo.toml",
     "./The Book/10. Generic Types, Traits, and Lifetimes/aggregator/Cargo.toml",
-    "./The Book/11. Writing Automated Tests/adder/Cargo.toml"
+    "./The Book/11. Writing Automated Tests/adder/Cargo.toml",
+    "./The Book/12. An IO Project Building a Command Line Program/minigrep/Cargo.toml"
   ]
 }
