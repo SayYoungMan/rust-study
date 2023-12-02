@@ -43,3 +43,10 @@
   2. Write or modify just enough code to make the new test pass.
   3. Refactor the code you just added or changed and make sure the tests continue to pass.
   4. Repeat from step 1!
+
+## 12.6. Writing Error Messages to Standard Error Instead of Standard Output
+
+- In most terminals, there are two kinds of output:
+  - Standard output (`stdout`) for general information
+  - Standard error (`stderr`) for error messages
+- This distinction enables users to choose to direct the successful output of a program to a file but still print error messages to the screen.
