@@ -74,3 +74,8 @@
 ### Using Closures that Capture Their Environment
 
 - Commonly, the closures specified as arguments to iterator adapters will be closures that capture their environment.
+
+## 13.4. Comparing Performance: Loops vs. Iterators
+
+- The iterators, although a high-level abstraction, get compiled down to roughly the same code as if you'd written the lower-level code yourself.
+- `Unrolling` of loop is an optimization that removes the overhead of the loop controlling code and instead generates repetitive code for each iteration of the loop.
