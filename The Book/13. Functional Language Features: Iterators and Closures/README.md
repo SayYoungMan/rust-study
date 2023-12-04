@@ -36,3 +36,41 @@
   1. `FnOnce` applies to closures that can be called once. All closures implement at least this trait. A closure that moves captured values out of its body will only implement this.
   2. `FnMut` applies to closures that don't move captured values out of their body, but that might mutate the captured values. These closures can be called more than once.
   3. `Fn` applies to closures that don't move captured values out nor don't they mutate captured values. These closures can be called more than once without mutating their environment, which is important if calling a closure multiple times concurrently.
+
+## 13.2. Processing a Series of Items with Iterators
+
+- The iterator pattern allows you to perform some task on a sequence of items in turn.
+- An iterator is responsible for the logic of iterating over each item and determining when the sequence has finished.
+- In Rust, iterators are lazy, meaning they have no effect until you call methods that consume the iterator to use it up.
+
+### The Iterator Trait and the next Method
+
+- All iterators implement a trait named `Iterator` that looks like this:
+
+  ```rust
+  pub trait Iterator {
+    type Item;
+
+    fn next(&mut self) -> Option<Self::Item>;
+  }
+  ```
+
+- Iterator trait requires you to also define an `Item` type that is used in the return type of `next` method.
+- When the iteration is over, it returns None but otherwise returns Item wrapped in Some.
+- Calling the `next` method on an iterator changes internal state that iterator uses to keep track of where it is in the sequence so this code consumes the iterator so it takes mutable reference to iterator.
+- We get immutable references to the values in the vector from iterator. If we want it to take ownership and return owned values, we can call `into_iter`, or if we want to iterate over mutable references we can call `iter_mut`.
+
+### Method that Consume the Iterator
+
+- Methods that call `next` are called `consuming adaptors` because calling them uses up the iterator.
+- One example is `sum` method, which takes ownership of iterator and iterates through the items by repeatedly calling next.
+
+### Methods that Produce Other Iterators
+
+- `Iterator adaptors` are methods defined on the `Iterator` trait that don't consume the iterator. Instead, they produce different iterators by changing some aspect of the original iterator.
+- One example is method `map`, which takes a closure to call on each item and returns a new iterator that produces the modified items.
+- `collect` method consumes the iterator and collects the resulting values into a collection data type.
+
+### Using Closures that Capture Their Environment
+
+- Commonly, the closures specified as arguments to iterator adapters will be closures that capture their environment.
