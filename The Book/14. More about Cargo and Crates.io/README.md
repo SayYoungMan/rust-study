@@ -72,3 +72,9 @@
 - You can only install packages that have binary targets.
 - A `binary target` is the runnable program that is created if the crate has a `src/main.rs` file or another file specified as a binary.
 - All binaries installed with `cargo install` are stored in the installation root's bin folder.
+
+## 14.5. Extending Cargo with Custom Commands
+
+- Cargo is designed so you can extend it with new subcommands without having to modify Cargo.
+- If a binary in your `$PATH` is named `cargo-something`, you can run it as if it was a Cargo subcommand by running `cargo something`.
+- Custom commands like this are also listed when you run `cargo --list`.
