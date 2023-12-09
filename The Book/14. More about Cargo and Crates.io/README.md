@@ -44,3 +44,24 @@
 
 - Yanking a version prevents new projects from depending on that version while allowing all existing projects that depend on it to continue.
 - To yank a version, in the directory of the crate you published, run `cargo yank` and specify which version under `--vers` flag.
+
+## 14.3. Cargo Workspaces
+
+- Cargo offers a feature called `workspaces` that can help manage multiple related packages that are developed in tandem.
+
+### Creating a Workspace
+
+- A workspace is a set of packages that share the same `Cargo.lock` and output directory.
+- By sharing one target directory, between crates of same workspace, the crates can avoid unnecessary rebuilding.
+- Cargo doesn't assume that crates in a workspace will depend on each other, so we need to be explicit about the dependency relationships.
+- To specify which package in the workspace we want to run, add `-p` argument and the package name with `cargo run`.
+
+### Depending on an External Package in a Workspace
+
+- There is only one `Cargo.lock` file at the top level, rather than having one in each crate. This ensures that all crates are using the same version of all dependencies.
+- Making all crates in the workspace use the same dependencies means the crates will always be compatible with each other.
+
+#### Adding a Test to a Workspace
+
+- Running `cargo test` in a workspace will run the tests for all the crates in the workspace.
+- If you publish the crates in the workspace to crates.io, each crate in the workspace will need to be published separately.
