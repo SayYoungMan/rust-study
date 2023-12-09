@@ -65,3 +65,10 @@
 
 - Running `cargo test` in a workspace will run the tests for all the crates in the workspace.
 - If you publish the crates in the workspace to crates.io, each crate in the workspace will need to be published separately.
+
+## 14.4. Installing Binaries with cargo install
+
+- The `cargo install` command allows you to install and use binary crates locally.
+- You can only install packages that have binary targets.
+- A `binary target` is the runnable program that is created if the crate has a `src/main.rs` file or another file specified as a binary.
+- All binaries installed with `cargo install` are stored in the installation root's bin folder.
