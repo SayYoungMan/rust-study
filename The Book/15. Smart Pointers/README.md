@@ -72,3 +72,84 @@ fn main() {
     let list = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
 }
 ```
+
+## 15.2. Treating Smart Pointers Like Regular References with the Deref Trait
+
+- Implementing the `Deref` trait allows you to customize the behaviour of the dereference operator (\*).
+
+### Using `Box<T>` Like a Reference
+
+```rust
+fn main() {
+    let x = 5;
+    let y = Box::new(x);
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
+}
+```
+
+- You can dereference the value pointed by the box. However, it would be pointing to a copied value of x rather than a reference pointing to the value of x.
+
+### Defining Our own Smart Pointer
+
+```rust
+struct MyBox<T>(T);
+
+impl<T> MyBox<T> {
+    fn new(x: T) -> MyBox<T> {
+        MyBox(x)
+    }
+}
+```
+
+- This will not work yet because we need to implement deref.
+
+### Treating a Type Like a Reference by Implementing the Deref Trait
+
+```rust
+use std::ops::Deref;
+
+impl<T> Deref for MyBox<T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+```
+
+- `*y` behind the scenes will run `*(y.deref())`.
+- The reason `deref` method returns a reference to a value is because if it returned the value directly, the value would be moved out of self.
+- We don't want to take ownership of the inner value inside `MyBox<T>` in most cases where we use dereference operator.
+
+### Implicit Deref Coercions with Functions and Methods
+
+- `Deref coercion` converts a reference to a type that implements the `Deref` trait into a reference to another type.
+- Deref coercion is a convenience Rust performs on arguments to functions and methods and works only on types that implement the Deref trait.
+- It happens automatically when we pass a reference to a particular type's value as an argument to a function or method that doesn't match the parameter type in the function or method definition.
+- A sequence of calls to the deref method converts the type we provided into the type the parameter needs.
+
+```rust
+fn hello(name: &str) {
+    println!("Hello, {name}!");
+}
+
+fn main() {
+    let m = MyBox::new(String::from("Rust"));
+    hello(&m);
+}
+```
+
+- We can pass `&MyBox` to `&str` here because it calls `&String` by deref, and it returns `&str` by deref again.
+- The number of timess that deref needs to be inserted is resolved at compile time so there is no runtime penalty.
+
+### How Deref Coercion Interacts with Mutability
+
+- You can use `DerefMut` trait to override the \* operator on mutable references.
+- Rust does deref coercion when it finds types and trait implementations in three cases:
+  - From &T to &U when `T: Deref<Target=U>`
+  - From &mut T to &mut U when `T: Deref<Target=U>`
+  - From &mut T to &U when `T: Deref<Target=U>`
+- Rust will also coerce a mutable reference to an immutable one but the reverse is not possible.
+- This is to guarantee borrowing rules, if you have a mutable reference, that mutable reference must be the only reference to that data.
