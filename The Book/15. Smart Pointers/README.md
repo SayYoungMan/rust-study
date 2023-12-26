@@ -153,3 +153,16 @@ fn main() {
   - From &mut T to &U when `T: Deref<Target=U>`
 - Rust will also coerce a mutable reference to an immutable one but the reverse is not possible.
 - This is to guarantee borrowing rules, if you have a mutable reference, that mutable reference must be the only reference to that data.
+
+## 15.3 Running Code on Cleanup with the Drop Trait
+
+- `Drop` lets you customize what happens when a value is about to go out of scope.
+- You can provide an implementation for the Drop trait on any type, and that code can be used to release resources like files or network connections.
+- Functionality of the `Drop` trait is almost always used when implmenting a smart pointer. e.g. when a `Box<T>` is dropped it will deallocate the space on the heap that the box points to.
+- Variables are dropped in the reverse order of their creation in the same scope.
+
+### Dropping a Value Early with `std::mem::drop`
+
+- Occasionally, you might want to clean up a value early. e.g. when using smart pointers that manage locks: you might want to force the `drop` method that releases the lock so that other code in the same scope can acquire the lock.
+- You have to call `std::mem::drop` function provided by the standard library to force a value to be dropped early.
+- Rust doesn't allow us to call `drop` explicitly because it's a `destructor` method and this would cause `double free` error because Rust would be trying to clean up the same value twice.
