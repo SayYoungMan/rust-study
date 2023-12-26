@@ -185,3 +185,39 @@ fn main() {
 - We can get the counts of references by calling `Rc::strong_count` function.
 - Its implementation of `Drop` trait automatically decreases the reference count when an `Rc<T>` value goes out of scope.
 - Via immutable references, `Rc<T>` allows you to share data between multiple parts of your program for reading only.
+
+## 15.5. `RefCell<T>` and the Interior Mutability Pattern
+
+- `Interior mutability` is a design pattern in Rust that allows you to mutate data even when there are immutable references to that data.
+- To mutate data, the pattern uses `unsafe` code inside a data structure to bend Rust's usual rules that govern mutation and borrowing.
+- Unsafe code indicates to the compiler that we're checking the rules manually instead of relying on the compiler.
+
+### Enforcing Borrowing Rules at Runtime with `RefCell<T>`
+
+- The `RefCell<T>` type represents single ownership over the data it holds but differently from `Box<T>`, the borrowing rules' invariants are enforced at runtime. If you break these rules, your program will panic and exit.
+- The advantage of checking the borrowing rules at runtime instead is that certain memory-safe scenarios are allowed, where they would've been disallowed by the compile-time checks.
+
+### Interior Mutability: A Mutable Borrow to an Immutable Value
+
+- A consequence of the borrowing rules is that when you have an immutable value, you can't borrow it mutably.
+- However, there are situations in which it would be useful for a value to mutate itself in its methods but appear immutable to other code.
+
+#### A Use Case for Interior Mutability: Mock Objects
+
+- Sometimes during testing a programmer will use a type in place of another type, in order to observe particular behavior and assert it's implmented correctly. This placeholder type is called a `test double`.
+- `Mock objects` are specific types of test doubles that record what happens during a test so you can assert that the correct actions took place.
+- Rust doesn't have mock object functionality built into the standard library but you can create a struct that will serve the same purposes.
+- When an actual implementation has a method that doesn't return anything useful to assert on unit tests. You would make a MockImplementation that implements the method in a way that it keeps the value we want to assert on. However, this is difficult when the method does not have mutable reference in the signature.
+- This is where `RefCell` can help by setting that saving field as type of `Refcell<T>`.
+- We need to call `borrow_mut` method to make changes to the field and `borrow` to get an immutable reference to the vector.
+
+### Keeping Track of Borrows at Runtime with `RefCell<T>`
+
+- The `borrow` method returns the smart pointer type `Ref<T>` and `borrow_mut` returns the smart pointer type `RefMut<T>`.
+- Both types implement `Deref` so we can treat them like regular references.
+- The `RefCell<T>` keeps track of how many `Ref<T>` and `RefMut<T>` smart pointers are currently active.
+- If we try to violate these rules, rather than getting a compiler error, the implementation of `RefCell<T>` will panic at runtime.
+
+### Having Multiple Owners of Mutable Data by Combining `Rc<T>` and `RefCell<T>`
+
+- If you have an `Rc<T>` that holds a `RefCell<T>`, you can get a value that can have multiple owners and that you can mutate.
