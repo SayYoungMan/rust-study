@@ -166,3 +166,22 @@ fn main() {
 - Occasionally, you might want to clean up a value early. e.g. when using smart pointers that manage locks: you might want to force the `drop` method that releases the lock so that other code in the same scope can acquire the lock.
 - You have to call `std::mem::drop` function provided by the standard library to force a value to be dropped early.
 - Rust doesn't allow us to call `drop` explicitly because it's a `destructor` method and this would cause `double free` error because Rust would be trying to clean up the same value twice.
+
+## 15.4. `Rc<T>`, the Reference Counted Smart Pointer
+
+- There are cases when a single value might have multiple owners, like in graph structures, multiple edges might point to the same node.
+- You have to enable multiple ownership explicitly by using the Rust type `Rc<T>`, which is an abbreviation of `reference counting`.
+- `Rc<T>` keeps track of the number of references to a value to determine whether or not the value is still in use.
+- If there are zero references to a value, the value can be cleaned up without any references becoming invalid.
+- We use `Rc<T>` when we want to allocate some data on the heap for multiple parts of our program to read and we can't determine at compile time which part will finish using the data last.
+
+### Using `Rc<T>` to Share Data
+
+- You have to call `Rc::clone` when creating new reference to the object so that the number of references increase.
+- The implementation of `Rc::clone` doesn't make a deep copy of all the data like `clone` do and the call to `Rc::clone` only increments the reference count. Therefore, it's Rust's convention to use `Rc::clone`.
+
+### Cloning an `Rc<T>` increases the Reference Count
+
+- We can get the counts of references by calling `Rc::strong_count` function.
+- Its implementation of `Drop` trait automatically decreases the reference count when an `Rc<T>` value goes out of scope.
+- Via immutable references, `Rc<T>` allows you to share data between multiple parts of your program for reading only.
