@@ -83,3 +83,119 @@ fn main() {
     handle.join().unwrap();
 }
 ```
+
+## 16.2. Using Message Passing to Transfer Data Between Threads
+
+- One approach to ensure safe concurrency is `message passing`, where threads or actors communicate by sending each other messages containing data.
+- To accomplish this, Rust's standard library provides `channels`, which is a programming concept by which data is sent from one thread to another.
+- A channel has two parts: `transmitter` and `receiver`. One part of your code calls methods on the transmitter with the data you want to send and another part checks the receiving end for arriving messages.
+
+  - A channel is said to be `closed` if either transmitter or receiver is dropped.
+
+- We create a new channel using `mpsc::channel` function; `mpsc` stands for `multiple producer, single consumer`.
+  - Rust's standard library implements channels in a way that they can have multiple sending ends that produce values but only one receiving end that consumes the values.
+- `mpsc::channel` function returns a tuple, the first element is the sending end (transmitter) and the second element is the receiving end (receiver).
+
+```rust
+use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+    });
+
+    let received = rx.recv().unwrap();
+    println!("Got: {}", received);
+}
+```
+
+- The transmitter has a `send` method that takes the value we want to send and return `Result` type, so if the receiver has already been dropped, it will return error.
+- Receiver has `recv` method for blocking the main thread's execution and wait until a value is sent down the channel. It will then return `Result` as when the transmitter is closed, `recv` will return an error to signal that no more values will come.
+- `try_recv` method doesn't block but will return `Result` immediately: `Ok` value holding a message if one is available and `Err` if no message. It's useful if this thread has other work to do while waiting for messages.
+
+### Channels and Ownership Transference
+
+- We can't use `val` anymore, in the previous example, after we've sent it down the channel via `tx.send`.
+- Because once it's been sent, that thread could modify or drop it and it can cause unexpected results due to inconsistent or nonexistent data.
+
+### Sending Multiple Values and Seeing the Receiver Waiting
+
+```rust
+use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    for received in rx {
+        println!("Got: {}", received);
+    }
+}
+```
+
+- This time, the spawned thread has a vector of strings and we send them one by one.
+- We are no longer calling `recv` function and we're treating `rx` as an iterator. When the channel is closed, iteration will end.
+
+### Creating Multiple Producers by Cloning the Transmitter
+
+```rust
+    // --snip--
+
+    let (tx, rx) = mpsc::channel();
+
+    let tx1 = tx.clone();
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+
+        for val in vals {
+            tx1.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("more"),
+            String::from("messages"),
+            String::from("for"),
+            String::from("you"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    for received in rx {
+        println!("Got: {}", received);
+    }
+
+    // --snip--
+```
+
+- This will give us two threads, each sending different messages to the one receiver.
