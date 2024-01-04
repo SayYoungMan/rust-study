@@ -199,3 +199,83 @@ fn main() {
 ```
 
 - This will give us two threads, each sending different messages to the one receiver.
+
+## 16.3. Shared-State Concurrency
+
+- Shared memory concurrency is bad because it's like multiple ownership: multiple threads can access the same memory location at the same time.
+
+### Using Mutexes to Allow Access to Data from One Thread at a Time
+
+- `Mutex` is an abbreviation for `mutual exclusion`, a mutex allows only one thread to access some data at any given time.
+- To access the data in a mutex, a thread must first signal that it wants access by asking to acquire the mutex's `lock`.
+- The lock is a data structure that is part of the mutex that keeps track of who currently has exclusive access to the data.
+- You must remember two rules with mutex:
+  1. You must attempt to acquire the lock before using the data.
+  2. When you're done with the data that the mutex guards, you must unlock the data so other threads can acquire the lock.
+
+### The API of `Mutex<T>`
+
+```rust
+use std::sync::Mutex;
+
+fn main() {
+    let m = Mutex::new(5);
+
+    {
+        let mut num = m.lock().unwrap();
+        *num = 6;
+    }
+
+    println!("m = {:?}", m);
+}
+```
+
+- Create `Mutex<T>` using the associated function `new`.
+- To access the data inside the mutex, we use `lock` method to acquire the lock. This call will block the current thread so it can't do any work until it's our turn to have the lock.
+- The call to `lock` would fail if another thread holding the lock panicked.
+- After we've acquired the lock, we can treat the return value, as a mutable reference to the data inside.
+- The call to `lock` returns a smart pointer called `MutexGuard`, wrapped in a `LockResult`.
+- The `MutexGuard` implements `Deref` to point at our inner data and has `Drop` implementation that releases the lock when it goes out of scope.
+
+### Multiple Ownership with Multiple Threads
+
+- `Rc<T>` is not safe to share across threads. When `Rc<T>` manages the reference count, it adds to the count for each call to `clone`and subtracts from the count when each clone is dropped.
+- But it doesn't use any concurrency primitives to make sure that changes to the count can't be interrupted by another thread.
+
+### Atomic Reference Counting with `Arc<T>`
+
+- `Arc<T>` is a type like `Rc<T>` that is safe to use in concurrent situations.
+- It stands for `atomically reference counted` type.
+- Atomics work like primitive types but are safe to share across threads.
+- The thread safety comes with a performance penalty so we don't need it on single thread.
+
+```rust
+use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    let counter = Arc::new(Mutex::new(0));
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let counter = Arc::clone(&counter);
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+
+            *num += 1;
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Result: {}", *counter.lock().unwrap());
+}
+```
+
+### Similarities Between `Refcell<T>`/`Rc<T>` and `Mutex<T>`/`Arc<T>`
+
+- `Mutex<T>` provides interior mutability as the `Cell` family does.
+- `Mutex<T>` comes with the risk of creating `deadlocks` like when `Rc<T>` creates reference cycles.
