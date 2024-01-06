@@ -279,3 +279,23 @@ fn main() {
 
 - `Mutex<T>` provides interior mutability as the `Cell` family does.
 - `Mutex<T>` comes with the risk of creating `deadlocks` like when `Rc<T>` creates reference cycles.
+
+## 16.4. Extensible Concurrency with the Sync and Send Traits
+
+### Allowing Transference of Ownership between Threads with Send
+
+- The `Send` marker trait indicates that ownership of values of the type implementing `Send` can be transferred between threads.
+- Almost every Rust type is Sned, but there are some exceptions like `Rc<T>`, because if you cloned an `Rc<T>` value and tried to transfer ownership of the clone to another thread, both threads might update the reference count at the same time.
+- Any type composed entirely of `Send` types is automatically marked as `Send` as well.
+
+### Allowing Access from Multiple Threads with Sync
+
+- The `Sync` marker trait indicates that it is safe for the type implementing Sync to be referenced from multiple threads.
+- Any type `T` is `Sync` if `&T` (immutable reference) is `Send`, meaning the reference can be sent safely to another thread.
+- Similar to `Send`, primitive types are `Sync`, and types composed entirely of types that are `Sync` are also `Sync`.
+
+### Implementing Send and Sync Manually is Unsafe
+
+- Since types made up of `Send` and `Sync` are automatically `Send` and `Sync`, we don't have to implement them manually.
+- As marker traits, they don't even have methods to implement. They are just useful for enforcing invariants related to concurrency.
+- Building new concurrent types not made up of `Send` and `Sync` require careful thought to uphold the safety guarantees.
