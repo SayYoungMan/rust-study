@@ -26,6 +26,7 @@
     "./The Book/10. Generic Types, Traits, and Lifetimes/aggregator/Cargo.toml",
     "./The Book/11. Writing Automated Tests/adder/Cargo.toml",
     "./The Book/12. An IO Project Building a Command Line Program/minigrep/Cargo.toml",
-    "./The Book/14. More about Cargo and Crates.io/add/Cargo.toml"
+    "./The Book/14. More about Cargo and Crates.io/add/Cargo.toml",
+    "./The Book/17. Object-Oriented Programming Features of Rust/gui/Cargo.toml"
   ]
 }
